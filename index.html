@@ -53,21 +53,21 @@ https://templatemo.com/tm-526-vanilla
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
-                    <div class="left-text">
-                        <h4>More About Vanilla</h4>
-                        <div class="line-dec"></div>
-                        <p>Vanilla is free HTML CSS template with Bootstrap v4.2.1.1337 and you can apply this theme for your
-                            sites.
-                            Please share our <a rel="nofollow" href="https://templatemo.com">website</a> to your friends
-                            or collegues. Thank you.</p>
-                        <ul>
-                            <li>- Praesent porta urna id eros</li>
-                            <li>- Curabitur consectetur malesuada</li>
-                            <li>- Nam pretium imperdiet enim</li>
-                            <li>- Sed viverra arcu non nisi efficitur</li>
-                        </ul>
-                        <div class="primary-button">
-                            <a href="#portfolio">Learn More About Us</a>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="service-item">
+                                <h4>Classic Modern Design</h4>
+                                <div class="line-dec"></div>
+                                <p>Sed lacinia ligula est, at venenatis ex iaculis quis. Morbi sollicitudin nulla eget
+                                    odio pellentesque.</p>
+                                <p>Sed lacinia ligula est, at venenatis ex iaculis quis. Morbi sollicitudin nulla eget
+                                    odio pellentesque.</p>
+                                <p>Sed lacinia ligula est, at venenatis ex iaculis quis. Morbi sollicitudin nulla eget
+                                    odio pellentesque.</p>
+                                <div class="primary-button">
+                                    <a href="#portfolio">Learn More About Us</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -302,7 +302,7 @@ https://templatemo.com/tm-526-vanilla
                         <div class="service-item">
                             <h4 class="msg-description">Send mig en besked</h4>
                             <p class="msg-description">Jeg svarer dig tilbage per mail hurtigst muligt.</p>
-                        </div>                        
+                        </div>
                     </div>
                 </div>
             </div>
@@ -351,7 +351,63 @@ https://templatemo.com/tm-526-vanilla
     </script>
 
     <script>
-            $(document).ready(function () {
+        $(function () {
+            function after_form_submitted(data) {
+                if (data.result == 'success') {
+                    $('form#reused_form').hide();
+                    $('#success_message').show();
+                    $('#error_message').hide();
+                }
+                else {
+                    $('#error_message').append('<ul></ul>');
+
+                    jQuery.each(data.errors, function (key, val) {
+                        $('#error_message ul').append('<li>' + key + ':' + val + '</li>');
+                    });
+                    $('#success_message').hide();
+                    $('#error_message').show();
+
+                    //reverse the response on the button
+                    $('button[type="button"]', $form).each(function () {
+                        $btn = $(this);
+                        label = $btn.prop('orig_label');
+                        if (label) {
+                            $btn.prop('type', 'submit');
+                            $btn.text(label);
+                            $btn.prop('orig_label', '');
+                        }
+                    });
+
+                }//else
+            }
+
+            $('#reused_form').submit(function (e) {
+                e.preventDefault();
+
+                $form = $(this);
+                //show some response on the button
+                $('button[type="submit"]', $form).each(function () {
+                    $btn = $(this);
+                    $btn.prop('type', 'button');
+                    $btn.prop('orig_label', $btn.text());
+                    $btn.text('Sending ...');
+                });
+
+
+                $.ajax({
+                    type: "POST",
+                    url: 'handler.php',
+                    data: $form.serialize(),
+                    success: after_form_submitted,
+                    dataType: 'json'
+                });
+
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
             // Add smooth scrolling to all links
             $(".fixed-side-navbar a, .primary-button a").on('click', function (event) {
 
